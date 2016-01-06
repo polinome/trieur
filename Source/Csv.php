@@ -52,7 +52,21 @@ class Csv extends Source
     protected $data = [];
 
     /**
-     * State of the request (to ensure we don't parse the file multiple times).
+     * Current row
+     *
+     * @var array
+     */
+    protected $row = null;
+
+    /**
+     * Header row
+     *
+     * @var array
+     */
+    protected $header = null;
+
+    /**
+     * State of the request (to ensure we don't parse the file multiple times)
      *
      * @var string
      */
@@ -76,11 +90,11 @@ class Csv extends Source
         parent::__construct($conf, $columns, $connection);
 
         if (!file_exists($this->connection)) {
-            throw new Exception('No csv file founed : "' . $connection . '"');
+            throw new Exception('No csv file founed : "' . $this->connection . '"');
         }
 
         if (!is_readable($this->connection)) {
-            throw new Exception('Csv file not readable : "' . realpath($connection) . '"');
+            throw new Exception('Csv file not readable : "' . realpath($this->connection) . '"');
         }
 
         if (!isset($this->conf->length)) {
@@ -206,28 +220,39 @@ class Csv extends Source
     {
         $this->parse();
 
+        if (!empty($this->header)) {
+            $data = $this->data;
+            $this->data = [];
+
+            foreach ($data as $row) {
+                $fRow = [];
+                foreach ($row as $ind => $cell) {
+                    $fRow[$this->header[$ind]] = $cell;
+                }
+                $this->data[] = $fRow;
+            }
+        }
+
         return $this->data;
     }
 
     /**
-     * Add a row to the data following the defined orders.
-     *
-     * @param array $newRow The row
+     * Add the current row to the data following the defined orders.
      *
      * @return void
      */
-    protected function addToEligible($newRow)
+    protected function addToEligible()
     {
         $newOffset = count($this->data);
 
         foreach ($this->data as $offset => $row) {
-            if ($this->lowerThan($newRow, $row)) {
+            if ($this->lowerThan($this->row, $row)) {
                 $newOffset = $offset;
                 break;
             }
         }
 
-        $this->insertToEligible($newRow, $newOffset);
+        $this->insertToEligible($this->row, $newOffset);
     }
 
     /**
@@ -238,11 +263,11 @@ class Csv extends Source
      *
      * @return void
      */
-    protected function insertToEligible($row, $offset)
+    protected function insertToEligible($offset)
     {
         $this->data = array_merge(
             array_slice($this->data, 0, $offset),
-            [$row],
+            [$this->row],
             array_slice($this->data, $offset)
         );
     }
@@ -310,9 +335,9 @@ class Csv extends Source
 
         $this->data = [];
 
-        while ($this->row = $this->fetch()) {
+        while ($this->fetch()) {
             if ($this->filter()) {
-                $this->addToEligible($this->row);
+                $this->addToEligible();
                 $this->filteredCount++;
             }
             $this->count++;

@@ -2,6 +2,8 @@
 
 namespace Solire\Trieur\Source\Csv;
 
+use Solire\Trieur\Source\Csv;
+
 /**
  * Csv filter class for Contain filter.
  *
@@ -26,8 +28,7 @@ class Contain extends Filter
         $words = preg_split('`\s+`', $term);
         foreach ($words as $word) {
             foreach ($this->columns as $column) {
-                if (stripos($this->row[$column], $word) !== false
-                ) {
+                if (stripos($this->source->getCell($this->row, $column), $word) !== false) {
                     return true;
                 }
             }
