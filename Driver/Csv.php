@@ -1,0 +1,107 @@
+<?php
+
+namespace Polinome\Trieur\Driver;
+
+use Polinome\Trieur\Driver;
+use Polinome\Trieur\Columns;
+use Polinome\Trieur\Exception;
+use Solire\Conf\Conf;
+
+/**
+ * Datatables driver.
+ *
+ * @author  polinome <contact@polinome.com>
+ * @license MIT http://mit-license.org/
+ */
+class Csv extends Driver
+{
+    /**
+     * Constructeur.
+     *
+     * @param Conf    $config  The configuration to build the csv (maximum length,
+     *                         delimiter and the enclosure)
+     * @param Columns $columns The columns configuration
+     */
+    public function __construct(Conf $config, Columns $columns)
+    {
+        if (!isset($config->length)) {
+            $config->length = 0;
+        }
+        if (!isset($config->delimiter)) {
+            $config->delimiter = ',';
+        }
+        if (!isset($config->enclosure)) {
+            $config->enclosure = '"';
+        }
+
+        parent::__construct($config, $columns);
+    }
+
+    /**
+     * Return the offset.
+     *
+     * @return int
+     */
+    public function getOffset()
+    {
+        return null;
+    }
+
+    /**
+     * Return the number of lines.
+     *
+     * @return int
+     */
+    public function getLength()
+    {
+        return null;
+    }
+
+    /**
+     * Return the order.
+     *
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return [];
+    }
+
+    /**
+     * Return the filters.
+     *
+     * @return mixed
+     */
+    public function getFilters()
+    {
+        return [];
+    }
+
+    /**
+     * Return the content formated in csv.
+     *
+     * @param array $data          The data filtered by the current filters,
+     *                             offset and length, sorted by the current orders
+     * @param int   $count         The total of available lines filtered by the
+     *                             current filters
+     * @param int   $filteredCount The total of available lines
+     *
+     * @return array
+     */
+    public function getResponse(array $data, $count = null, $filteredCount = null)
+    {
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR
+                  . uniqid('php-polinome-trieur', true);
+        $handle = fopen($filename, 'w');
+
+        if (!$handle) {
+            throw new Exception('Unable to create file "' . $filename . '"');
+        }
+
+        foreach ($data as $row) {
+            fputcsv($handle, $row, $this->config->delimiter, $this->config->enclosure);
+        }
+
+        return file_get_contents($filename);
+    }
+}

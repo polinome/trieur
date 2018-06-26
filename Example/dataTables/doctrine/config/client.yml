@@ -1,0 +1,144 @@
+# -------------------------
+# CONFIG
+
+# Js Config
+driver:
+  name: dataTables
+  conf:
+    itemName: client
+    itemsName: clients
+    # masculin ou féminin
+    # "e"|""
+    itemGenre:
+    requestUrl: data.json
+    requestMethod: POST
+    separator: "~"
+    dom: <"H"TClfr>t<"F"ip>
+    defaultSort:
+    - [0, asc]
+
+source:
+  name: doctrine
+  conf:
+    select:
+      - c.societe
+      - c.civilite
+      - c.nom
+      - c.prenom
+      - c.email
+      - c.time_inscription
+      - a.tel1 tel
+      - IF(c.ns > 0, "Oui", "Non") AS offre
+      - CONCAT(a.adresse1, "<br>", IF(a.adresse2 IS NULL, "", a.adresse2), "<br>", a.cp, " ", a.ville, "<br>", a.pays) AS adresse
+
+    from:
+      name: client
+      alias: c
+
+    innerJoin:
+      -
+        name: client_adresse
+        alias: a
+        on: a.client_id = c.id AND a.principal = 1
+
+    group: c.id
+
+
+## COLUMNS
+
+columns:
+#  columnName:
+#    label: columnLabel
+#    sort: 1|0
+#    filter: 1|0
+#    driverFilterType: text, dateRange...
+#    source: source expression (for example a column)
+#    sourceFilter: source expression (for example a column)
+#    sourceSort: source expression (for example a column)
+#    sourceName: key in the sourceData output (if not defined columnName)
+#    sourceFilterType: Contain
+#    ...
+
+  societe:
+    label: Société
+    sort: 1
+    filter: 1
+    sourceFilterType: Contain
+    driverFilterType: text
+    source: societe
+    sourceFilter: c.societe
+    sourceSort: c.societe
+
+  email:
+    label: Email
+    filter: 1
+    driverFilterType: text
+    sourceFilterType: Contain
+    sort: 1
+    source: email
+    sourceFilter: c.email
+    sourceSort: c.email
+
+  tel:
+    label: Téléphone
+    filter: 1
+    driverFilterType: text
+    sourceFilterType: Contain
+    sort: 1
+    source: a.tel1
+
+  nom:
+    label: Nom
+    filter: 1
+    driverFilterType: text
+    sourceFilterType: Contain
+    sort: 1
+    source: c.nom
+
+  prenom:
+    label: Prénom
+    filter: 1
+    driverFilterType: text
+    sourceFilterType: Contain
+    sort: 1
+    source: c.prenom
+
+  offre:
+    label: Offre
+    filter: 0
+    sort: 1
+    source: offre
+
+  adresse:
+    label: Adresse
+    filter: 0
+    sort: 0
+    callback: strip_tags
+
+  time_inscription:
+    label: Date
+    filter: true
+    driverFilterType: dateRange
+    sourceFilterType: DateRange
+    sort: true
+    sourceFilter: DATE(c.time_inscription)
+    sourceSort: c.time_inscription
+    format:
+      class: \Polinome\Trieur\Format\Callback
+      name:
+        - \Polinome\Trieur\Example\Format
+        - sqlTo
+      cell: dateSql
+      arguments:
+        format: d/m/Y H:i:s
+#      name: str_replace
+#      cellTo: subject
+#      rowTo: subject
+#      arguments:
+#        search: a
+#        replace:
+#    callback:
+#      name: Polinome\Trieur\Example\Format::sqlTo
+#      cell: 0
+#      arguments:
+#        - d/m/Y H:i:s
