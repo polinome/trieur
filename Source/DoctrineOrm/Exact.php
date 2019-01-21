@@ -27,7 +27,7 @@ class Exact extends Filter
         }
 
         $conds = [];
-        foreach ($terms as $term) {
+        foreach ($terms as $index => $term) {
             foreach ($this->columns as $colName) {
                 $cond = $this->queryBuilder->expr()->like($colName, ':word_' . ($index + 1));
                 $this->queryBuilder->setParameter('word_' . ($index + 1), $term);
