@@ -40,8 +40,10 @@ class Contain extends Filter
         $conds = [];
         foreach ($words as $index => $word) {
             foreach ($this->columns as $colName) {
-                $cond = $this->queryBuilder->expr()->like($colName, ':word_' . ($index + 1));
-                $this->queryBuilder->setParameter('word_' . ($index + 1), '%' . $word . '%');
+                $paramName = ':' . \uniqid('word_' . ($index + 1) . '_');
+
+                $cond = $this->queryBuilder->expr()->like($colName, $paramName);
+                $this->queryBuilder->setParameter($paramName, '%' . $word . '%');
 
                 $conds[] = $cond;
             }

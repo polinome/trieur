@@ -53,13 +53,15 @@ class DateRange extends Filter
     public function filter()
     {
         if (preg_match(self::MASK, $this->from)) {
-            $cond = $this->queryBuilder->expr()->gte($this->columns[0], ':from');
-            $this->queryBuilder->andWhere($cond)->setParameter('from', $this->from);
+            $paramName = ':' . \uniqid('from_');
+            $cond = $this->queryBuilder->expr()->gte($this->columns[0], $paramName);
+            $this->queryBuilder->andWhere($cond)->setParameter($paramName, $this->from);
         }
 
         if (preg_match(self::MASK, $this->to)) {
-            $cond = $this->queryBuilder->expr()->lte($this->columns[0], ':to');
-            $this->queryBuilder->andWhere($cond)->setParameter('to', $this->to);
+            $paramName = ':' . \uniqid('to_');
+            $cond = $this->queryBuilder->expr()->lte($this->columns[0], $paramName);
+            $this->queryBuilder->andWhere($cond)->setParameter($paramName, $this->to);
         }
     }
 }

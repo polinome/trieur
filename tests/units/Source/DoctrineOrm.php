@@ -137,13 +137,16 @@ class DoctrineOrm extends atoum
                     ->isInstanceOf(QueryBuilder::class)
 
                 ->string($dql = $qB->getDQL())
-                    ->isEqualTo('SELECT c.id, c.nom FROM ' . Profil::class . ' c WHERE c.nom LIKE :word_1 GROUP BY c.id')
+                    ->match('#^SELECT c\.id, c\.nom FROM ' . \preg_quote(Profil::class, '#') . ' c WHERE c\.nom LIKE :word_1_\w+ GROUP BY c.id$#')
 
                 ->string($qB->getQuery()->getSQL())
                     ->match('#^SELECT (\w+)\.id AS (\w+), \1\.nom AS (\w+) FROM profil \1 WHERE \1\.nom LIKE \? GROUP BY \1\.id$#')
 
-                ->object($param = $qB->getParameter('word_1'))
+                ->object($param = $qB->getParameters()[0])
                     ->isInstanceOf(Parameter::class)
+
+                ->string($param->getName())
+                    ->match('#^word_1_\w+$#')
 
                 ->string($param->getValue())
                     ->isEqualTo('%' . $term . '%')
@@ -154,7 +157,7 @@ class DoctrineOrm extends atoum
                     ->isInstanceOf(QueryBuilder::class)
 
                 ->string($dql = $qB->getDQL())
-                    ->isEqualTo('SELECT c.id, c.nom FROM ' . Profil::class . ' c WHERE c.nom LIKE :word_1 GROUP BY c.id')
+                    ->match('#^SELECT c\.id, c\.nom FROM ' . \preg_quote(Profil::class, '#') . ' c WHERE c\.nom LIKE :word_1_\w+ GROUP BY c\.id$#')
 
                 ->string($qB->getQuery()->getSQL())
                     ->match('#^SELECT (\w+)\.id AS (\w+), \1\.nom AS (\w+) FROM profil \1 WHERE \1\.nom LIKE \? GROUP BY \1\.id LIMIT 1 OFFSET 1$#')
@@ -164,7 +167,7 @@ class DoctrineOrm extends atoum
                     ->isInstanceOf(QueryBuilder::class)
 
                 ->string($dql = $qB->getDQL())
-                    ->isEqualTo('SELECT c.id, c.nom FROM ' . Profil::class . ' c WHERE c.nom LIKE :word_1 GROUP BY c.id ORDER BY c.id ASC')
+                    ->match('#^SELECT c\.id, c\.nom FROM ' . \preg_quote(Profil::class, '#') . ' c WHERE c\.nom LIKE :word_1_\w+ GROUP BY c\.id ORDER BY c\.id ASC$#')
 
                 ->string($qB->getQuery()->getSQL())
                     ->match('#^SELECT (\w+)\.id AS (\w+), \1\.nom AS (\w+) FROM profil \1 WHERE \1\.nom LIKE \? GROUP BY \1\.id ORDER BY \1\.id ASC LIMIT 1 OFFSET 1$#')

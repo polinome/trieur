@@ -39,6 +39,6 @@
     }
   },
   "scripts": {
-    "test": "cd tests/units; ../../vendor/bin/atoum -d ."
+    "test": "./vendor/bin/atoum -d ./tests/units"
   }
 }
