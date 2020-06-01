@@ -10,15 +10,15 @@ More information on documentation:
 [fr] http://docs.atoum.org/fr/chapter3.html#Fichier-de-bootstrap
 */
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // Génération d'un dossier temporaires pour les tests
-define('TEST_TMP_DIR', __DIR__ . '/../tmp');
+define('TEST_TMP_DIR', __DIR__ . '/tests/tmp');
 if (!is_dir(TEST_TMP_DIR)) {
     mkdir(TEST_TMP_DIR);
 }
 
-define('TEST_DATA_DIR', __DIR__ . '/../data');
+define('TEST_DATA_DIR', __DIR__ . '/tests/data');
 if (!is_dir(TEST_TMP_DIR)) {
     mkdir(TEST_TMP_DIR);
 }

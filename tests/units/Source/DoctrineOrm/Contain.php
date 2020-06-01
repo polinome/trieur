@@ -95,7 +95,7 @@ class Contain extends atoum
             ->and($qB->select('p.nom'))
             ->and($qB->from(Profil::class, 'p'))
                 ->string($contain->getQueryBuilder()->getDQL())
-                    ->isEqualTo('SELECT p.nom FROM Polinome\Trieur\tests\data\Entity\Profil p WHERE p.nom LIKE :word_1')
+                    ->match('#^SELECT p\.nom FROM ' . \preg_quote(Profil::class, '#') . ' p WHERE p\.nom LIKE :word_1_\w+$#')
                 ->string($contain->getQueryBuilder()->getQuery()->getSQL())
                     ->match('#^SELECT (\w+)\.nom AS (\w+) FROM profil \1 WHERE \1\.nom LIKE \?$#')
         ;
