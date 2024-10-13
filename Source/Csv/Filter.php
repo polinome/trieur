@@ -40,9 +40,9 @@ abstract class Filter extends SourceFilter
     }
 
     /**
-     * Sets the row
+     * Sets the source
      *
-     * @param array $row The row
+     * @param Csv $source The row
      *
      * @return void
      */

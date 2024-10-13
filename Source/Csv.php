@@ -59,13 +59,6 @@ class Csv extends Source
     protected $row = null;
 
     /**
-     * Header row
-     *
-     * @var array
-     */
-    protected $header = null;
-
-    /**
      * State of the request (to ensure we don't parse the file multiple times)
      *
      * @var string
@@ -124,8 +117,6 @@ class Csv extends Source
 
     /**
      * Opens the csv file.
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -144,8 +135,7 @@ class Csv extends Source
      *
      * @param bool $raw Do not change keys with header cells
      *
-     * @return bool
-     *
+     * @return array
      * @throws Exception
      */
     protected function fetch($raw = false)
@@ -157,12 +147,14 @@ class Csv extends Source
             $this->conf->enclosure
         );
 
-        if ($raw || empty($this->header)) {
-            return $row;
+        if (empty($row)) {
+            return null;
         }
 
-        if ($row === false) {
-            return false;
+        $this->row = $row;
+
+        if ($raw || empty($this->header)) {
+            return true;
         }
 
         $formatedRow = [];
@@ -174,7 +166,7 @@ class Csv extends Source
             $formatedRow[$this->header[$ii]] = $cell;
         }
 
-        return $formatedRow;
+        return $this->row = $formatedRow;
     }
 
     /**
@@ -191,6 +183,7 @@ class Csv extends Source
      * Return the total of available lines.
      *
      * @return int Total number
+     * @throws Exception
      */
     public function getCount()
     {
@@ -203,6 +196,13 @@ class Csv extends Source
      * Return the total of available lines filtered by the current filters.
      *
      * @return int Total number
+     */
+
+    /**
+     * Return the total of available lines filtered by the current filters.
+     *
+     * @return int Total number
+     * @throws Exception
      */
     public function getFilteredCount()
     {
@@ -239,7 +239,7 @@ class Csv extends Source
     /**
      * Add the current row to the data following the defined orders.
      *
-     * @return void
+     * @throws Exception
      */
     protected function addToEligible()
     {
@@ -252,16 +252,13 @@ class Csv extends Source
             }
         }
 
-        $this->insertToEligible($this->row, $newOffset);
+        $this->insertToEligible($newOffset);
     }
 
     /**
      * Inserts a row in the data at a defined offset.
      *
-     * @param array $row    The row
-     * @param int   $offset The offset
-     *
-     * @return void
+     * @param int $offset The offset
      */
     protected function insertToEligible($offset)
     {
@@ -313,7 +310,7 @@ class Csv extends Source
     /**
      * Parse the csv file, and build the data array.
      *
-     * @return void
+     * @throws Exception
      */
     protected function parse()
     {
@@ -324,7 +321,7 @@ class Csv extends Source
             $this->length,
         ]));
 
-        if ($this->md5 == $currentMd5) {
+        if ($this->md5 === $currentMd5) {
             return;
         }
 
@@ -355,15 +352,14 @@ class Csv extends Source
     /**
      * Process the filter.
      *
-     * @param Filter $filter The filter class
-     *
-     * @return void
+     * @param SourceFilter $filter The filter class
      */
     protected function processFilter(SourceFilter $filter)
     {
         $filter->setRow($this->row);
+        $filter->setSource($this);
 
-        return $filter->filter();
+        $filter->filter();
     }
 
     /**
@@ -372,11 +368,11 @@ class Csv extends Source
      * @param array      $row        Row
      * @param string|int $indexOrKey Index or key
      *
-     * @return type
+     * @return mixed
      *
      * @throws Exception
      */
-    protected function getCell($row, $indexOrKey)
+    public function getCell(array $row, $indexOrKey)
     {
         $index = $indexOrKey;
         if (!empty($this->header)) {
@@ -387,6 +383,6 @@ class Csv extends Source
             }
         }
 
-        return $row[$indexOrKey];
+        return $row[$index];
     }
 }

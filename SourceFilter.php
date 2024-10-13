@@ -41,8 +41,6 @@ abstract class SourceFilter
 
     /**
      * Filter.
-     *
-     * @return void
      */
     abstract public function filter();
 }

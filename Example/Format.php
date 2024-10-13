@@ -33,7 +33,7 @@ class Format
      */
     public static function sqlTo($dateSql, $format = 'd/m/Y')
     {
-        $date = new \DateTime($dateSql);
+        $date = new \DateTime::createFromFormat('Y-m-d', $dateSql);
         return $date->format($format);
     }
 }
