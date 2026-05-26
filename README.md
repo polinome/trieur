@@ -16,9 +16,11 @@ We use dataTables jquery pluggin. Therefore one of the driver available is made 
 
 ## USAGE
 ```php
-use Polinome\Trieur\Trieur;
-use Solire\Conf\Conf;
-use Doctrine\DBAL\DriverManager;
+use App\Entity\Customer;
+use Polinome\Trieur\Driver\DataTablesDriver;
+use Polinome\Trieur\Source\DoctrineOrm\DoctrineOrm;
+use Polinome\Trieur\Source\DoctrineOrm\Filter\Contain;
+use Polinome\Trieur\Source\DoctrineOrm\Filter\Exact;
 
 // Defining the trieur configuration
 $trieurConf = new Conf;
@@ -28,17 +30,55 @@ $trieurConf
     ->set('doctrine', 'source', 'name')
     ...
 ;
+$trieurConf = [
+    'source' => [
+        'class' => DoctrineOrm::class,
+        'config' => [
+            'select' => [
+                'c.id',
+                'c.firstname',
+                'c.lastname',
+                'c.email',
+            ],
+            'from' => [
+                'name' => Customer::class,
+                'alias' => 'c',
+            ],
+            'group' => 'c.id',
+        ],
+    ],
+    'driver' => [
+        'class' => DataTablesDriver::class,
+        'config' => [
+            'itemName' => 'client',
+            'itemsName' => 'clients',
+        ],
+    ],
+    'columns' => [
+        'id' => [
+            'label' => 'ID',
+            'field' => 'c.id',
+            'filter' => true,
+            'sort' => true,
+            'filterType' => Exact::class,
+        ],
+        'firstname' => [
+            'label' => 'Prénom',
+            'field' => 'c.firstname',
+            'filter' => true,
+            'sort' => true,
+            'filterType' => Contain::class,
+        ],
+        (...)
+    ],
+]
 
-// Defining a source, here we use a doctrine connection
-$parameters = [
-    'driver' => 'pdo_mysql',
-    ...
-];
-$doctrineConnection = DriverManager::getConnection($parameters);
+/* @var \Doctrine\ORM\EntityManagerInterface $entityManager */
+/* @var \Symfony\Component\HttpFoundation\Request::class $request */
 
 // Then here goes the magic
-$trieur = new Trieur($conf, $doctrineConnection);
-$trieur->setRequest($_POST);
+$trieur = new Trieur($conf, $entityManager);
+$trieur->setRequest($request->request->request->all());
 
 $response = $trieur->getResponse();
 
