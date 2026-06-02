@@ -44,7 +44,9 @@ class Columns implements \IteratorAggregate
      */
     public function get(string|int $index): Column
     {
-        if (is_int($index)) {
+        if ((string) ($index) === (string) (int) $index) {
+            $index = (int) $index;
+
             if (!isset($this->columnsByIndex[$index])) {
                 throw new \InvalidArgumentException(sprintf('Undefined index "%s" in the columns list', $index));
             }

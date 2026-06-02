@@ -4,6 +4,7 @@ namespace Polinome\Trieur\Source\DoctrineOrm;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Polinome\Trieur\Config\Column;
 use Polinome\Trieur\Config\Columns;
 use Polinome\Trieur\Exception;
 use Polinome\Trieur\FilterTypes;
@@ -101,8 +102,8 @@ class DoctrineOrm extends AbstractSource
             $this->queryBuilder->$joinType(
                 $join['name'],
                 $join['alias'],
-                $join['type'],
-                $join['cond']
+                $join['type'] ?? null,
+                $join['cond'] ?? null,
             );
         }
     }
@@ -157,16 +158,18 @@ class DoctrineOrm extends AbstractSource
         }
 
         foreach ($this->orders as $order) {
+            /* @var string $column */
+            /* @var string $dir */
             [$column, $dir] = $order;
 
             $this->currentQueryBuilder->addOrderBy(
-                $column->sourceSort,
+                $column,
                 $dir
             );
         }
 
-        if (isset($this->config->group)) {
-            $this->currentQueryBuilder->groupBy($this->config->group);
+        if (isset($this->config['group'])) {
+            $this->currentQueryBuilder->groupBy($this->config['group']);
         }
 
         return $this->currentQueryBuilder;

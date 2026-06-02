@@ -43,7 +43,8 @@ readonly class Format
             }
 
             $cellFormated = $this->formateCell($row, $column);
-            $rowFormated[$column->name] = $cellFormated;
+            $columnName = $column->name;
+            $rowFormated[$columnName] = $cellFormated;
         }
 
         return $rowFormated;
@@ -55,7 +56,13 @@ readonly class Format
     protected function formateCell(array $row, Column $column): string
     {
         if (null === $column->format) {
-            return $this->getCell($row, $column);
+            $cell = $this->getCell($row, $column);
+
+            if (is_object($cell) && property_exists($cell, 'value')) {
+                return $cell->value;
+            }
+
+            return $cell;
         }
 
         $className = $this->getFormatClassName($column);
@@ -65,7 +72,7 @@ readonly class Format
         return $formatInstance->render();
     }
 
-    protected function getCell(array $row, Column $column): string
+    protected function getCell(array $row, Column $column): mixed
     {
         if (!isset($row[$column->name])) {
             return '';

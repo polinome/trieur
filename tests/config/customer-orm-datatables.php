@@ -15,6 +15,7 @@ return [
                 'c.firstname',
                 'c.lastname',
                 'c.email',
+                'c.gender',
             ],
             'from' => [
                 'name' => Customer::class,
@@ -37,6 +38,10 @@ return [
             'filter' => true,
             'sort' => true,
             'filterType' => Exact::class,
+            'driverOptions' => [
+                'html' => 'input',
+                'type' => 'number',
+            ],
         ],
         'firstname' => [
             'label' => 'Prénom',
@@ -44,6 +49,10 @@ return [
             'filter' => true,
             'sort' => true,
             'filterType' => FilterTypes::CONTAIN,
+            'driverOptions' => [
+                'html' => 'input',
+                'type' => 'text',
+            ],
         ],
         'lastname' => [
             'label' => 'Nom',
@@ -51,6 +60,10 @@ return [
             'filter' => true,
             'sort' => true,
             'filterType' => FilterTypes::CONTAIN,
+            'driverOptions' => [
+                'html' => 'input',
+                'type' => 'text',
+            ],
         ],
         'email' => [
             'label' => 'Email',
@@ -58,6 +71,34 @@ return [
             'filter' => true,
             'sort' => true,
             'filterType' => FilterTypes::CONTAIN,
+            'driverOptions' => [
+                'html' => 'input',
+                'type' => 'text',
+            ]
+        ],
+        'gender' => [
+            'label' => 'Genre',
+            'field' => 'c.gender',
+            'filter' => true,
+            'sort' => true,
+            'filterType' => FilterTypes::CONTAIN,
+            'driverOptions' => [
+                'html' => 'select',
+                'values' => [
+                    [
+                        'value' => 'MAN',
+                        'label' => 'Homme',
+                    ],
+                    [
+                        'value' => 'WOMAN',
+                        'label' => 'Femme',
+                    ],
+                    [
+                        'value' => 'UNKNOWN',
+                        'label' => 'Inconnu',
+                    ]
+                ]
+            ],
         ],
     ],
 ];

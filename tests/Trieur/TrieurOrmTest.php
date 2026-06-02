@@ -72,6 +72,7 @@ class TrieurOrmTest extends TestCase
                     'firstname' => 'John',
                     'lastname' => 'Doe',
                     'email' => 'john.doe@trieur.com',
+                    'gender' => 'MALE',
                 ],
                 /*[
                     'id' => '2',
@@ -123,6 +124,7 @@ class TrieurOrmTest extends TestCase
                     'firstname' => 'John',
                     'lastname' => 'Doe',
                     'email' => 'john.doe@trieur.com',
+                    'gender' => 'MALE',
                 ],
                 /*[
                     'id' => '2',
@@ -134,6 +136,106 @@ class TrieurOrmTest extends TestCase
             'recordsTotal' => 2,
             'recordsFiltered' => 1,
         ], $result);
+
+        $this->assertEquals([
+            'processing' => true,
+            'serverSide' => true,
+            'ajax' => [
+                'url' => null,
+                'type' => null,
+            ],
+            'columns' => [
+                [
+                    'orderable' => true,
+                    'searchable' => true,
+                    'data' => 'id',
+                    'name' => 'id',
+                    'title' => 'ID',
+                ],
+                [
+                    'orderable' => true,
+                    'searchable' => true,
+                    'data' => 'firstname',
+                    'name' => 'firstname',
+                    'title' => 'Prénom',
+                ],
+                [
+                    'orderable' => true,
+                    'searchable' => true,
+                    'data' => 'lastname',
+                    'name' => 'lastname',
+                    'title' => 'Nom',
+                ],
+                [
+                    'orderable' => true,
+                    'searchable' => true,
+                    'data' => 'email',
+                    'name' => 'email',
+                    'title' => 'Email',
+                ],
+                [
+                    'orderable' => true,
+                    'searchable' => true,
+                    'data' => 'gender',
+                    'name' => 'gender',
+                    'title' => 'Genre',
+                ],
+            ],
+            'language' => [
+                'emptyTable' => 'Aucun client trouvé',
+                'info' => 'clients _START_ à  _END_ sur _TOTAL_ clients',
+                'infoEmpty' => 'Aucun client',
+                'infoFiltered' => '(filtre sur _MAX_ clients)',
+                'lengthMenu' => 'Montrer _MENU_ clients par page',
+                'paginate' => [
+                    'first' => 'première page',
+                    'last' => 'dernière page',
+                    'next' => 'page suivante',
+                    'previous' => 'page précédente',
+                ],
+                'processing' => 'Chargement',
+                'search' => 'Recherche',
+                'searchPlaceholder' => 'Recherche',
+                'thousands' => '&nbsp;',
+                'zeroRecords' => 'Aucun client',
+
+            ],
+        ], $this->trieur->getDriver()->getJsConfig());
+        $this->assertEquals([
+            [
+                'html' => 'input',
+                'type' => 'number',
+            ],
+            [
+                'html' => 'input',
+                'type' => 'text',
+            ],
+            [
+                'html' => 'input',
+                'type' => 'text',
+            ],
+            [
+                'html' => 'input',
+                'type' => 'text',
+            ],
+            [
+                'html' => 'select',
+                'values' => [
+                    [
+                        'value' => 'MAN',
+                        'label' => 'Homme',
+                    ],
+                    [
+                        'value' => 'WOMAN',
+                        'label' => 'Femme',
+                    ],
+                    [
+                        'value' => 'UNKNOWN',
+                        'label' => 'Inconnu',
+                    ]
+                ],
+            ],
+        ], $this->trieur->getDriver()->getColumnFilterConfig());
     }
 
     public function testFetchDatatablesWithColumnTermNoResult(): void

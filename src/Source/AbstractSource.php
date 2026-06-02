@@ -94,8 +94,9 @@ abstract class AbstractSource
      */
     final public function addOrder(string $column, string $direction = 'ASC'): void
     {
+        $column = $this->columns->get($column);
         $this->orders[] = [
-            $column,
+            $column->field,
             $direction,
         ];
     }

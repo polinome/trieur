@@ -7,6 +7,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Polinome\Trieur\Tests\Context\Entity\Customer;
+use Polinome\Trieur\Tests\Context\Enum\Gender;
 
 trait InitDatabaseTrait
 {
@@ -40,6 +41,7 @@ trait InitDatabaseTrait
                 firstname VARCHAR(255) NOT NULL,
                 lastname VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL,
+                gender ENUM('MALE', 'FEMALE', 'UNKNOWN') NOT NULL,
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             SQL
@@ -49,12 +51,14 @@ trait InitDatabaseTrait
         $customer->setFirstname('John');
         $customer->setLastname('Doe');
         $customer->setEmail('john.doe@trieur.com');
+        $customer->setGender(Gender::MALE);
         $this->entityManager->persist($customer);
 
         $customer = new Customer();
         $customer->setFirstname('Jane');
         $customer->setLastname('Doe');
         $customer->setEmail('jane.doe@trieur.com');
+        $customer->setGender(Gender::FEMALE);
         $this->entityManager->persist($customer);
 
         $this->entityManager->flush();

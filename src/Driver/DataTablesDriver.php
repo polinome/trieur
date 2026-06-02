@@ -44,7 +44,10 @@ class DataTablesDriver extends AbstractDriver
 
         /* @var Column $column */
         foreach ($this->columns as $index => $column) {
-            $clientColumn = $this->request['columns'][$index];
+            $clientColumn = $this->request['columns'][$index] ?? [
+                'searchable' => false,
+            ];
+
             if (
                 !$clientColumn['searchable']
                 || !$column->filter
@@ -57,7 +60,7 @@ class DataTablesDriver extends AbstractDriver
             $filterableColumns[] = $column->name;
 
             $term = $this->getColumnTerm($clientColumn);
-            if (null === $term) {
+            if (null === $term || '' === $term) {
                 continue;
             }
 
@@ -101,7 +104,7 @@ class DataTablesDriver extends AbstractDriver
     {
         $orders = [];
 
-        if (!isset($this->request['order'])) {
+        if (empty($this->request['order'])) {
             return $orders;
         }
 
@@ -182,7 +185,7 @@ class DataTablesDriver extends AbstractDriver
             //            'decimal' => null,
             // language.emptyTable : Table has no records string
             'emptyTable' => 'Aucun '.$this->config['itemName']
-                .' trouvé'.$this->config['itemGenre'],
+                .' trouvé'.($this->config['itemGenre'] ?? ''),
             // language.info : Table summary information display string
             'info' => ''.$this->config['itemsName']
                 .' _START_ à  _END_ sur _TOTAL_ '.$this->config['itemsName'],
@@ -231,8 +234,8 @@ class DataTablesDriver extends AbstractDriver
             'processing' => true,
             'serverSide' => true,
             'ajax' => [
-                'url' => $this->config['requestUrl'],
-                'type' => $this->config['requestMethod'],
+                'url' => $this->config['requestUrl'] ?? null,
+                'type' => $this->config['requestMethod'] ?? null,
             ],
             'columns' => $this->getJsColsConfig(),
             'language' => $this->getJsLanguageConfig(),
@@ -262,6 +265,7 @@ class DataTablesDriver extends AbstractDriver
     {
         $config = [];
 
+        /* @var Column $column */
         foreach ($this->columns as $index => $column) {
             if (isset($column->driverHidden) && $column->driverHidden) {
                 continue;
@@ -271,13 +275,7 @@ class DataTablesDriver extends AbstractDriver
                 continue;
             }
 
-            $columnConfig = [];
-            $columnConfig['html'] = $column->driverFilterType;
-            if (isset($column->driverOption)) {
-                $columnConfig = array_merge($columnConfig, $column->driverOption);
-            }
-
-            $config[$index] = $columnConfig;
+            $config[$index] = $column->driverOptions;
         }
 
         return $config;

@@ -4,7 +4,7 @@ namespace Polinome\Trieur\Config;
 
 class Column
 {
-    private ?string $label = null {
+    public ?string $label = null {
         get {
             return $this->label;
         }
@@ -20,7 +20,7 @@ class Column
             $this->field = $value;
         }
     }
-    protected bool $sort {
+    public bool $sort = false {
         get {
             return $this->sort;
         }
@@ -60,7 +60,7 @@ class Column
             $this->filterField = $value;
         }
     }
-    protected array $driverOptions = [] {
+    public array $driverOptions = [] {
         get {
             return $this->driverOptions;
         }

@@ -15,6 +15,7 @@ return [
                 'c.firstname',
                 'c.lastname',
                 'c.email',
+                'c.gender',
             ],
             'from' => [
                 'name' => Customer::class,
