@@ -174,31 +174,29 @@ class DataTablesDriver extends AbstractDriver
     public function getJsLanguageConfig(): array
     {
         return [
-            //            // language.aria : Language strings used for WAI-ARIA specific attributes
-            //            'aria' => [
-            //                // language.aria.sortAscending : Language strings used for WAI-ARIA specific attributes
-            //                'sortAscending'  => null,
-            //                // language.aria.sortDescending : Language strings used for WAI-ARIA specific attributes
-            //                'sortDescending' => null,
-            //            ],
-            //            // language.decimal : Decimal place character
-            //            'decimal' => null,
+            // language.aria : Language strings used for WAI-ARIA specific attributes
+            // 'aria' => [
+            //     // language.aria.sortAscending : Language strings used for WAI-ARIA specific attributes
+            //     'sortAscending'  => null,
+            //     // language.aria.sortDescending : Language strings used for WAI-ARIA specific attributes
+            //     'sortDescending' => null,
+            // ],
+            // language.decimal : Decimal place character
+            // 'decimal' => null,
             // language.emptyTable : Table has no records string
-            'emptyTable' => 'Aucun '.$this->config['itemName']
-                .' trouvé'.($this->config['itemGenre'] ?? ''),
+            'emptyTable' => 'Aucun '.$this->config['itemName'].' trouvé'.($this->config['itemGenre'] ?? ''),
             // language.info : Table summary information display string
-            'info' => ''.$this->config['itemsName']
-                .' _START_ à  _END_ sur _TOTAL_ '.$this->config['itemsName'],
+            'info' => ''.$this->config['itemsName'].' _START_ à  _END_ sur _TOTAL_ '.$this->config['itemsName'],
             // language.infoEmpty : Table summary information string used when the table is empty or records
             'infoEmpty' => 'Aucun '.$this->config['itemName'],
             // language.infoFiltered : Appended string to the summary information when the table is filtered
             'infoFiltered' => '(filtre sur _MAX_ '.$this->config['itemsName'].')',
-            //            // language.infoPostFix : String to append to all other summary information strings
-            //            'infoPostFix' => null,
+            // language.infoPostFix : String to append to all other summary information strings
+            // 'infoPostFix' => null,
             // language.lengthMenu : Page length options string
             'lengthMenu' => 'Montrer _MENU_ '.$this->config['itemsName'].' par page',
-            //            // language.loadingRecords : Loading information display string - shown when Ajax loading data
-            //            'loadingRecords' => null,
+            // language.loadingRecords : Loading information display string - shown when Ajax loading data
+            // 'loadingRecords' => null,
             // language.paginate : Pagination specifarray(ic language strings
             'paginate' => [
                 // language.paginate.first : Pagination 'first' button string
