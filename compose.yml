@@ -1,0 +1,29 @@
+services:
+  php_apache:
+    build:
+      context: docker/php_apache
+    container_name: ${DOCKER_CONTAINER_PREFIX_NAME}_php_apache
+    user: "33:33"
+    volumes:
+      - ./:/var/www/
+    ports: [ "${DOCKER_APACHE_EXPOSED_PORT}:80" ]
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mysql:
+      container_name: ${DOCKER_CONTAINER_PREFIX_NAME}_mysql
+      build:
+          context: ./docker/mysql
+      environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: trieur
+          MYSQL_USER: trieur
+          MYSQL_PASSWORD: trieur
+      ports: [ "${DOCKER_MYSQL_EXPOSED_PORT}:3306" ]
+      volumes:
+          - database_data:/var/lib/mysql
+          - ./var/data/shared:/shared
+
+volumes:
+  database_data:
